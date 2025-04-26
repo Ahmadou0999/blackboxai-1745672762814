@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Tires{% endblock %}
+{% block page_title %}Tire Inventory{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-6xl">
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold">Tire Inventory</h2>
+        <a href="{{ url_for('tire.create') }}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">Add New Tire</a>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+            <thead>
+                <tr class="bg-gray-100 border-b border-gray-200">
+                    <th class="text-left py-2 px-4">Brand</th>
+                    <th class="text-left py-2 px-4">Model</th>
+                    <th class="text-left py-2 px-4">Size</th>
+                    <th class="text-left py-2 px-4">Width</th>
+                    <th class="text-left py-2 px-4">Aspect Ratio</th>
+                    <th class="text-left py-2 px-4">Diameter</th>
+                    <th class="text-left py-2 px-4">Load Index</th>
+                    <th class="text-left py-2 px-4">Speed Rating</th>
+                    <th class="text-left py-2 px-4">Season</th>
+                    <th class="text-left py-2 px-4">Quantity</th>
+                    <th class="text-left py-2 px-4">Purchase Price</th>
+                    <th class="text-left py-2 px-4">Selling Price</th>
+                    <th class="text-left py-2 px-4">Min Stock</th>
+                    <th class="text-left py-2 px-4">Supplier</th>
+                    <th class="text-left py-2 px-4">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tire in tires %}
+                <tr class="border-b border-gray-200 hover:bg-gray-50">
+                    <td class="py-2 px-4">{{ tire.brand }}</td>
+                    <td class="py-2 px-4">{{ tire.model }}</td>
+                    <td class="py-2 px-4">{{ tire.size }}</td>
+                    <td class="py-2 px-4">{{ tire.width }}</td>
+                    <td class="py-2 px-4">{{ tire.aspect_ratio }}</td>
+                    <td class="py-2 px-4">{{ tire.diameter }}</td>
+                    <td class="py-2 px-4">{{ tire.load_index }}</td>
+                    <td class="py-2 px-4">{{ tire.speed_rating }}</td>
+                    <td class="py-2 px-4">{{ tire.season }}</td>
+                    <td class="py-2 px-4">{{ tire.quantity }}</td>
+                    <td class="py-2 px-4">{{ tire.purchase_price }}</td>
+                    <td class="py-2 px-4">{{ tire.selling_price }}</td>
+                    <td class="py-2 px-4">{{ tire.min_stock }}</td>
+                    <td class="py-2 px-4">{{ tire.supplier.name if tire.supplier else '' }}</td>
+                    <td class="py-2 px-4 space-x-2">
+                        <a href="{{ url_for('tire.view', tire_id=tire.id) }}" class="text-blue-600 hover:underline">View</a>
+                        <a href="{{ url_for('tire.edit', tire_id=tire.id) }}" class="text-green-600 hover:underline">Edit</a>
+                        <form action="{{ url_for('tire.delete', tire_id=tire.id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this tire?');">
+                            <button type="submit" class="text-red-600 hover:underline bg-transparent border-none p-0 cursor-pointer">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="15" class="text-center py-4">No tires found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
