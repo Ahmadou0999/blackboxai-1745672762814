@@ -1,0 +1,13 @@
+Flask==2.3.2
+Flask-SQLAlchemy==3.0.5
+Flask-WTF==1.1.1
+Flask-Login==0.6.2
+Flask-Migrate==4.0.4
+python-dotenv==1.0.0
+WTForms==3.0.1
+Flask-Admin==1.6.1
+Flask-Security==4.0.0
+Flask-JSON==0.3.4
+Flask-Cors==3.0.10
+pandas==2.0.3
+numpy==1.24.3
