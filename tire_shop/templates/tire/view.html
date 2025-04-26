@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}View Tire{% endblock %}
+{% block page_title %}Tire Details{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-3xl">
+    <h2 class="text-2xl font-bold mb-6">Tire Details</h2>
+    <div class="bg-white shadow rounded-lg p-6">
+        <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <dt class="font-semibold text-gray-700">Brand</dt>
+                <dd class="mt-1 text-gray-900">{{ tire.brand }}</dd>
+            </div>
+            <div>
+                <dt class="font-semibold text-gray-700">Model</dt>
+                <dd class="mt-1 text-gray-900">{{ tire.model }}</dd>
+            </div>
+            <div>
+                <dt class="font-semibold text-gray-700">Size</dt>
+                <dd class="mt-1 text-gray-900">{{ tire.size }}</dd>
+            </div>
+            <div>
+                <dt class="font-semibold text-gray-700">Width</dt>
+                <dd class="mt-1 text-gray-900">{{ tire.width }}</dd>
+            </div>
+            <div>
+                <dt class="font-semibold text-gray-700">Aspect Ratio</dt>
+                <dd class="mt-1 text-gray-900">{{ tire.aspect_ratio }}</dd>
+            </div>
+            <div>
+                <dt class="font-semibold text-gray-700">Diameter</dt>
+                <dd class="mt-1 text-gray-900">{{ tire.diameter }}</dd>
+            </div>
+            <div>
+                <dt class="font-semibold text-gray-700">Load Index</dt>
+                <dd class="mt-1 text-gray-900">{{ tire.load_index }}</dd>
+            </div>
+            <div>
+                <dt class="font-semibold text-gray-700">Speed Rating</dt>
+                <dd class="mt-1 text-gray-900">{{ tire.speed_rating }}</dd>
+            </div>
+            <div>
+                <dt class="font-semibold text-gray-700">Season</dt>
+                <dd class="mt-1 text-gray-900">{{ tire.season }}</dd>
+            </div>
+            <div>
+                <dt class="font-semibold text-gray-700">Quantity</dt>
+                <dd class="mt-1 text-gray-900">{{ tire.quantity }}</dd>
+            </div>
+            <div>
+                <dt class="font-semibold text-gray-700">Purchase Price</dt>
+                <dd class="mt-1 text-gray-900">{{ tire.purchase_price }}</dd>
+            </div>
+            <div>
+                <dt class="font-semibold text-gray-700">Selling Price</dt>
+                <dd class="mt-1 text-gray-900">{{ tire.selling_price }}</dd>
+            </div>
+            <div>
+                <dt class="font-semibold text-gray-700">Minimum Stock</dt>
+                <dd class="mt-1 text-gray-900">{{ tire.min_stock }}</dd>
+            </div>
+            <div>
+                <dt class="font-semibold text-gray-700">Supplier</dt>
+                <dd class="mt-1 text-gray-900">{{ tire.supplier.name if tire.supplier else '' }}</dd>
+            </div>
+        </dl>
+        <div class="mt-6 flex space-x-4">
+            <a href="{{ url_for('tire.edit', tire_id=tire.id) }}" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg">Edit</a>
+            <a href="{{ url_for('tire.index') }}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg">Back to List</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
