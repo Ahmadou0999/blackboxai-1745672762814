@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Transactions{% endblock %}
+{% block page_title %}Transaction History{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">All Transactions</h3>
+                <div class="card-tools">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown">
+                            <i class="fas fa-plus"></i> Add Transaction
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a href="{{ url_for('dashboard.add_purchase') }}" class="dropdown-item">Purchase</a>
+                            <a href="{{ url_for('dashboard.add_sale') }}" class="dropdown-item">Sale</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+<div class="card-body">
+    <form id="bulkDeleteTransactionsForm" method="POST" action="{{ url_for('dashboard.bulk_delete_transactions') }}">
+        <button type="submit" class="btn btn-danger mb-3" onclick="return confirm('Are you sure you want to delete selected transactions?');">Delete Selected</button>
+        <table id="transactionsTable" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" id="selectAllTransactions"></th>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Tire</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Total</th>
+                    <th>Supplier</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transactions %}
+                <tr class="{{ 'table-success' if transaction.transaction_type == 'sale' else 'table-info' }}">
+                    <td><input type="checkbox" name="transaction_ids" value="{{ transaction.id }}"></td>
+                    <td>{{ transaction.date.strftime('%Y-%m-%d') }}</td>
+                    <td>{{ transaction.transaction_type|title }}</td>
+                    <td>{{ transaction.tire.brand }} {{ transaction.tire.model }} {{ transaction.tire.size }}</td>
+                    <td>{{ transaction.quantity }}</td>
+                    <td>${{ "%.2f"|format(transaction.unit_price) }}</td>
+                    <td>${{ "%.2f"|format(transaction.total_amount) }}</td>
+                    <td>{{ transaction.supplier.name if transaction.supplier else 'N/A' }}</td>
+                    <td>{{ transaction.notes|truncate(30) if transaction.notes }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </form>
+</div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(function () {
+    // Initialize DataTable with sorting by date descending
+    $('#transactionsTable').DataTable({
+        "responsive": true,
+        "autoWidth": false,
+        "order": [[0, 'desc']]
+    });
+});
+</script>
+{% endblock %}
