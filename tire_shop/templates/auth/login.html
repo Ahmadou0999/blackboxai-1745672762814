@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+{% block page_title %}Login to Tire Shop Management{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">Please Sign In</h3>
+            </div>
+            <form method="POST" action="{{ url_for('auth.login') }}">
+                {{ form.hidden_tag() }}
+                <div class="card-body">
+                    <div class="form-group">
+                        {{ form.username.label }}
+                        {{ form.username(class="form-control", placeholder="Enter username") }}
+                        {% for error in form.username.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.password.label }}
+                        {{ form.password(class="form-control", placeholder="Password") }}
+                        {% for error in form.password.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        <div class="custom-control custom-checkbox">
+                            {{ form.remember(class="custom-control-input") }}
+                            {{ form.remember.label(class="custom-control-label") }}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary">Login</button>
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-link">Register new account</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
