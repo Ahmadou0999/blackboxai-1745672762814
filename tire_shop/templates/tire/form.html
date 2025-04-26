@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Tire Form{% endblock %}
+{% block page_title %}{{ tire and tire.id ? 'Edit Tire' : 'Add Tire' }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+    <h2 class="text-2xl font-bold mb-6">{{ tire and tire.id ? 'Edit Tire' : 'Add Tire' }}</h2>
+    <form method="POST" novalidate>
+        {{ form.hidden_tag() }}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                {{ form.brand.label(class="block text-sm font-medium text-gray-700 mb-1") }}
+                {{ form.brand(class="w-full px-3 py-2 border border-gray-300 rounded-md") }}
+            </div>
+            <div>
+                {{ form.model.label(class="block text-sm font-medium text-gray-700 mb-1") }}
+                {{ form.model(class="w-full px-3 py-2 border border-gray-300 rounded-md") }}
+            </div>
+            <div>
+                {{ form.size.label(class="block text-sm font-medium text-gray-700 mb-1") }}
+                {{ form.size(class="w-full px-3 py-2 border border-gray-300 rounded-md") }}
+            </div>
+            <div>
+                {{ form.width.label(class="block text-sm font-medium text-gray-700 mb-1") }}
+                {{ form.width(class="w-full px-3 py-2 border border-gray-300 rounded-md") }}
+            </div>
+            <div>
+                {{ form.aspect_ratio.label(class="block text-sm font-medium text-gray-700 mb-1") }}
+                {{ form.aspect_ratio(class="w-full px-3 py-2 border border-gray-300 rounded-md") }}
+            </div>
+            <div>
+                {{ form.diameter.label(class="block text-sm font-medium text-gray-700 mb-1") }}
+                {{ form.diameter(class="w-full px-3 py-2 border border-gray-300 rounded-md") }}
+            </div>
+            <div>
+                {{ form.load_index.label(class="block text-sm font-medium text-gray-700 mb-1") }}
+                {{ form.load_index(class="w-full px-3 py-2 border border-gray-300 rounded-md") }}
+            </div>
+            <div>
+                {{ form.speed_rating.label(class="block text-sm font-medium text-gray-700 mb-1") }}
+                {{ form.speed_rating(class="w-full px-3 py-2 border border-gray-300 rounded-md") }}
+            </div>
+            <div>
+                {{ form.season.label(class="block text-sm font-medium text-gray-700 mb-1") }}
+                {{ form.season(class="w-full px-3 py-2 border border-gray-300 rounded-md") }}
+            </div>
+            <div>
+                {{ form.quantity.label(class="block text-sm font-medium text-gray-700 mb-1") }}
+                {{ form.quantity(class="w-full px-3 py-2 border border-gray-300 rounded-md") }}
+            </div>
+            <div>
+                {{ form.purchase_price.label(class="block text-sm font-medium text-gray-700 mb-1") }}
+                {{ form.purchase_price(class="w-full px-3 py-2 border border-gray-300 rounded-md") }}
+            </div>
+            <div>
+                {{ form.selling_price.label(class="block text-sm font-medium text-gray-700 mb-1") }}
+                {{ form.selling_price(class="w-full px-3 py-2 border border-gray-300 rounded-md") }}
+            </div>
+            <div>
+                {{ form.min_stock.label(class="block text-sm font-medium text-gray-700 mb-1") }}
+                {{ form.min_stock(class="w-full px-3 py-2 border border-gray-300 rounded-md") }}
+            </div>
+            <div>
+                {{ form.supplier.label(class="block text-sm font-medium text-gray-700 mb-1") }}
+                {{ form.supplier(class="w-full px-3 py-2 border border-gray-300 rounded-md") }}
+            </div>
+        </div>
+        <div class="mt-6 flex space-x-4">
+            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg">Save</button>
+            <a href="{{ url_for('tire.index') }}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-2 rounded-lg">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
