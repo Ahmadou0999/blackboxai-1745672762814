@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Détails du Fournisseur{% endblock %}
+{% block page_title %}Détails du Fournisseur{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-3xl">
+    <h2 class="text-2xl font-bold mb-6">Détails du Fournisseur</h2>
+    <div class="bg-white shadow rounded-lg p-6">
+        <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <dt class="font-semibold text-gray-700">Nom</dt>
+                <dd class="mt-1 text-gray-900">{{ supplier.name }}</dd>
+            </div>
+            <div>
+                <dt class="font-semibold text-gray-700">Personne de contact</dt>
+                <dd class="mt-1 text-gray-900">{{ supplier.contact_person or '-' }}</dd>
+            </div>
+            <div>
+                <dt class="font-semibold text-gray-700">Téléphone</dt>
+                <dd class="mt-1 text-gray-900">{{ supplier.phone or '-' }}</dd>
+            </div>
+            <div>
+                <dt class="font-semibold text-gray-700">Email</dt>
+                <dd class="mt-1 text-gray-900">{{ supplier.email or '-' }}</dd>
+            </div>
+            <div class="md:col-span-2">
+                <dt class="font-semibold text-gray-700">Adresse</dt>
+                <dd class="mt-1 text-gray-900 whitespace-pre-line">{{ supplier.address or '-' }}</dd>
+            </div>
+            <div>
+                <dt class="font-semibold text-gray-700">Identifiant fiscal</dt>
+                <dd class="mt-1 text-gray-900">{{ supplier.tax_id or '-' }}</dd>
+            </div>
+            <div>
+                <dt class="font-semibold text-gray-700">Conditions de paiement</dt>
+                <dd class="mt-1 text-gray-900">{{ supplier.payment_terms or '-' }}</dd>
+            </div>
+            <div class="md:col-span-2">
+                <dt class="font-semibold text-gray-700">Notes</dt>
+                <dd class="mt-1 text-gray-900 whitespace-pre-line">{{ supplier.notes or '-' }}</dd>
+            </div>
+        </dl>
+        <div class="mt-6 flex space-x-4">
+            <a href="{{ url_for('supplier.edit', supplier_id=supplier.id) }}" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg">Modifier</a>
+            <a href="{{ url_for('supplier.index') }}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg">Retour à la liste</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
