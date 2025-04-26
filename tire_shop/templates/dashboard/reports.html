@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+
+{% block title %}Reports{% endblock %}
+{% block page_title %}Financial Reports{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Monthly Profit/Loss Card -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Monthly Profit/Loss</h3>
+            </div>
+            <div class="card-body">
+                <div class="chart">
+                    <canvas id="profitChart" style="min-height: 300px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inventory Value Card -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Inventory Value</h3>
+            </div>
+            <div class="card-body">
+                <div class="chart">
+                    <canvas id="inventoryChart" style="min-height: 300px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <!-- Detailed Financial Summary -->
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Financial Summary</h3>
+                <div class="card-tools">
+                    <div class="input-group input-group-sm">
+                        <input type="month" id="reportMonth" class="form-control" 
+                               value="{{ current_month }}" max="{{ current_month }}">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" id="updateReport">
+                                Update
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="info-box bg-success">
+                            <span class="info-box-icon"><i class="fas fa-dollar-sign"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">Total Sales</span>
+                                <span class="info-box-number">${{ "%.2f"|format(total_sales) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="info-box bg-info">
+                            <span class="info-box-icon"><i class="fas fa-shopping-cart"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">Total Purchases</span>
+                                <span class="info-box-number">${{ "%.2f"|format(total_purchases) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="info-box {{ 'bg-danger' if net_profit < 0 else 'bg-warning' }}">
+                            <span class="info-box-icon"><i class="fas fa-chart-line"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">Net Profit</span>
+                                <span class="info-box-number">${{ "%.2f"|format(net_profit) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Top Selling Tires</h3>
+                            </div>
+                            <div class="card-body p-0">
+                                <ul class="products-list product-list-in-card pl-2 pr-2">
+                                    {% for tire in top_selling %}
+                                    <li class="item">
+                                        <div class="product-info">
+                                            <a href="javascript:void(0)" class="product-title">
+                                                {{ tire.brand }} {{ tire.model }} {{ tire.size }}
+                                                <span class="badge badge-success float-right">
+                                                    {{ tire.sales_count }} sold
+                                                </span>
+                                            </a>
+                                            <span class="product-description">
+                                                ${{ "%.2f"|format(tire.total_sales) }} revenue
+                                            </span>
+                                        </div>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Recent Expenses</h3>
+                            </div>
+                            <div class="card-body p-0">
+                                <ul class="products-list product-list-in-card pl-2 pr-2">
+                                    {% for expense in recent_expenses %}
+                                    <li class="item">
+                                        <div class="product-info">
+                                            <a href="javascript:void(0)" class="product-title">
+                                                {{ expense.category|title }}
+                                                <span class="badge badge-danger float-right">
+                                                    ${{ "%.2f"|format(expense.amount) }}
+                                                </span>
+                                            </a>
+                                            <span class="product-description">
+                                                {{ expense.date.strftime('%Y-%m-%d') }} - {{ expense.description|truncate(30) }}
+                                            </span>
+                                        </div>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+$(function () {
+    // Profit/Loss Chart
+    const monthlyData = JSON.parse('{{ monthly_data|tojson|safe }}');
+    const profitCtx = document.getElementById('profitChart').getContext('2d');
+    const profitChart = new Chart(profitCtx, {
+        type: 'line',
+        data: {
+            labels: monthlyData.map(item => item[0]),
+            datasets: [{
+                label: 'Profit/Loss',
+                data: monthlyData.map(item => item[1]),
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return '$' + context.raw.toFixed(2);
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    ticks: {
+                        callback: function(value) {
+                            return '$' + value;
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Inventory Value Chart
+    const inventoryCtx = document.getElementById('inventoryChart').getContext('2d');
+    const inventoryChart = new Chart(inventoryCtx, {
+        type: 'doughnut',
+        data: {
+            labels: {{ inventory_value|map(attribute='0')|list|tojson }},
+            datasets: [{
+                data: {{ inventory_value|map(attribute='1')|list|tojson }},
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.7)',
+                    'rgba(54, 162, 235, 0.7)',
+                    'rgba(255, 206, 86, 0.7)',
+                    'rgba(75, 192, 192, 0.7)',
+                    'rgba(153, 102, 255, 0.7)'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.label + ': $' + context.raw.toFixed(2);
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Update report when month changes
+    $('#updateReport').click(function() {
+        const month = $('#reportMonth').val();
+        window.location.href = `${window.location.pathname}?month=${month}`;
+    });
+});
+</script>
+{% endblock %}
