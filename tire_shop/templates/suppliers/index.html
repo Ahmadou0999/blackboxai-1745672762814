@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Fournisseurs{% endblock %}
+{% block page_title %}Gestion des Fournisseurs{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">Liste des Fournisseurs</h2>
+        <a href="{{ url_for('supplier.create') }}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
+            <i class="fas fa-plus mr-2"></i>Ajouter un Fournisseur
+        </a>
+    </div>
+
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Téléphone</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {% for supplier in suppliers %}
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ supplier.name }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ supplier.contact_person or '-' }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ supplier.phone or '-' }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ supplier.email or '-' }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <a href="{{ url_for('supplier.view', supplier_id=supplier.id) }}" class="text-green-600 hover:text-green-900 mr-3">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a href="{{ url_for('supplier.edit', supplier_id=supplier.id) }}" class="text-blue-600 hover:text-blue-900 mr-3">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <form action="{{ url_for('supplier.delete', supplier_id=supplier.id) }}" method="POST" class="inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce fournisseur ?');">
+                            <button type="submit" class="text-red-600 hover:text-red-900">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
