@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Register{% endblock %}
+{% block page_title %}Create New Account{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">Register New User</h3>
+            </div>
+            <form method="POST" action="{{ url_for('auth.register') }}">
+                {{ form.hidden_tag() }}
+                <div class="card-body">
+                    <div class="form-group">
+                        {{ form.username.label }}
+                        {{ form.username(class="form-control", placeholder="Choose username") }}
+                        {% for error in form.username.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.email.label }}
+                        {{ form.email(class="form-control", placeholder="Email address") }}
+                        {% for error in form.email.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.password.label }}
+                        {{ form.password(class="form-control", placeholder="Password") }}
+                        {% for error in form.password.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.confirm_password.label }}
+                        {{ form.confirm_password(class="form-control", placeholder="Confirm password") }}
+                        {% for error in form.confirm_password.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        <div class="custom-control custom-checkbox">
+                            {{ form.is_admin(class="custom-control-input") }}
+                            {{ form.is_admin.label(class="custom-control-label") }}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary">Register</button>
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-link">Already have an account? Login</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
