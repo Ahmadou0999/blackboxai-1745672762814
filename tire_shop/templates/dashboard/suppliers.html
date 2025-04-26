@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block title %}Fournisseurs{% endblock %}
+{% block page_title %}Gestion des Fournisseurs{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">Liste des Fournisseurs</h2>
+        <button onclick="openSupplierModal()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
+            <i class="fas fa-plus mr-2"></i>Ajouter un Fournisseur
+        </button>
+    </div>
+
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Téléphone</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="suppliers-table" class="bg-white divide-y divide-gray-200">
+                {% for supplier in suppliers %}
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ supplier.name }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ supplier.contact_person or '-' }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ supplier.phone or '-' }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <button onclick="editSupplier({{ supplier.id }})" class="text-blue-500 hover:text-blue-700 mr-3">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="deleteSupplier({{ supplier.id }})" class="text-red-500 hover:text-red-700">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal pour ajouter/modifier un fournisseur -->
+<div id="supplier-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden flex items-center justify-center">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
+        <div class="p-6">
+            <h3 class="text-lg font-medium mb-4" id="modal-title">Nouveau Fournisseur</h3>
+            <form id="supplier-form">
+                <input type="hidden" id="supplier-id">
+                <div class="mb-4">
+                    <label for="name" class="block text-sm font-medium text-gray-700">Nom du fournisseur</label>
+                    <input type="text" id="name" name="name" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                </div>
+                <div class="mb-4">
+                    <label for="contact" class="block text-sm font-medium text-gray-700">Personne de contact</label>
+                    <input type="text" id="contact" name="contact"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeSupplierModal()"
+                        class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+                        Annuler
+                    </button>
+                    <button type="submit"
+                        class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
+                        Enregistrer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Fonctions pour gérer le modal
+function openSupplierModal(supplier = null) {
+    const modal = document.getElementById('supplier-modal');
+    const title = document.getElementById('modal-title');
+    const form = document.getElementById('supplier-form');
+    
+    if (supplier) {
+        title.textContent = 'Modifier Fournisseur';
+        document.getElementById('supplier-id').value = supplier.id;
+        document.getElementById('name').value = supplier.name;
+        document.getElementById('contact').value = supplier.contact_person || '';
+    } else {
+        title.textContent = 'Nouveau Fournisseur';
+        form.reset();
+    }
+    
+    modal.classList.remove('hidden');
+}
+
+function closeSupplierModal() {
+    document.getElementById('supplier-modal').classList.add('hidden');
+}
+
+// Fonctions CRUD
+async function fetchSuppliers() {
+    const response = await fetch('/api/suppliers');
+    return await response.json();
+}
+
+async function saveSupplier(event) {
+    event.preventDefault();
+    
+    const supplier = {
+        id: document.getElementById('supplier-id').value || null,
+        name: document.getElementById('name').value,
+        contact_person: document.getElementById('contact').value
+    };
+    
+    const method = supplier.id ? 'PUT' : 'POST';
+    const url = supplier.id ? `/api/suppliers/${supplier.id}` : '/api/suppliers';
+    
+    try {
+        const response = await fetch(url, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(supplier)
+        });
+        
+        if (response.ok) {
+            closeSupplierModal();
+            window.location.reload();
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+async function deleteSupplier(id) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce fournisseur ?')) {
+        try {
+            const response = await fetch(`/api/suppliers/${id}`, {
+                method: 'DELETE'
+            });
+            
+            if (response.ok) {
+                window.location.reload();
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+}
+
+// Initialisation
+document.getElementById('supplier-form').addEventListener('submit', saveSupplier);
+</script>
+{% endblock %}
